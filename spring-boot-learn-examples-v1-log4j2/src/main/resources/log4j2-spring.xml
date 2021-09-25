@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARE" name="log4j2-example" packages="">
+	  <Properties>
+	    <Property name="baseDir">./logs</Property>
+	  </Properties>
+	<!-- 打印到控制台的日志 -->
+	<Appenders>
+		<!-- 控制台打印 -->
+		<!-- target Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_OUT". -->
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}  [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+		</Console>
+		<!-- 生产环境打印方式 -->
+		<RollingFile name="FILE_INFO" fileName="${baseDir}/info.log" filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}.info.gz">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+		   	<!-- 打印级别 -->
+			<ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+			<Policies>
+				<!-- 参数配置为1 标识一小时一个文件  interval 此处填写 几就是 几小时滚动一次-->
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<!-- 每个文件的大小  如果使用这个配置 如果和时间的配置一起使用 需要在 生成的文件上加入 %i  参数 用户日志产生序列 -->
+				<!-- <TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="100 KB" /> -->
+			</Policies>
+		</RollingFile>
+		<RollingFile name="FILE_ERROR" fileName="${baseDir}/error.log" filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}.error.gz">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+			<!-- 打印级别 -->
+			 <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+			<Policies>
+				<!-- 参数配置为1 标识一小时一个文件 -->
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<!-- 打印debug日志 -->
+		<Root level="DEBUG">
+			<AppenderRef ref="STDOUT" />
+			<!-- 生产环境放开此配置-->
+			<AppenderRef ref="FILE_INFO" />
+			<AppenderRef ref="FILE_ERROR" /> 
+		</Root>
+	</Loggers>
+</Configuration>

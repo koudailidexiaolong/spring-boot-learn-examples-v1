@@ -1,0 +1,26 @@
+### 项目名称
+spring:
+  application:
+    name: spring-boot-learn-examples-v1-config
+server:
+  port: 8080                #端口号
+  
+debug: true                 #是否启用debug模式
+logging:
+  level:
+    root: debug
+    
+### 值的写法
+
+user:
+  userName: zhangsan
+  userAge: 15
+  userSex: true
+  userBirth: 2019/01/01 # 日期类型不可用 2019-09-09 这种形式
+  maps:
+    1: julong
+    2: zhangsan
+  list:
+    - wangwu
+    - zhaoliu
+  

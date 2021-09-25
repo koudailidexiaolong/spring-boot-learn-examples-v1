@@ -1,0 +1,5 @@
+spring:
+    application:
+        name: spring-boot-learn-examples-v1-quartz
+    profiles:
+        active: prod
