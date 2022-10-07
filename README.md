@@ -1,5 +1,6 @@
 # 				spring-boot-learn-examples
 此文件 为 自己 学习spring- boot 全家桶 的例子 
+
 JDK版本 1.7+
 
 spring-boot 版本 1.4.7+
@@ -10,7 +11,7 @@ sayHello 项目
 
 ## spring-boot-learn-examples-v1- jar
 
-以jar的方式运行的项目 此方式自带tomcat
+以jar的方式运行的项目 此方式自带tomcat 
 
 ## spring-boot-learn-examples-v1-war
 
@@ -48,3 +49,18 @@ sayHello 项目
 
 使用mybatis和pageHelper实现 数据库访问和分页功能
 
+## spring-boot-learn-examples-v1-actuator
+
+服务运行监控配置
+
+## spring-boot-learn-examples-v1-jsp
+
+springboot中集成jsp
+
+## spring-boot-learn-examples-v1-quartz
+
+定时任务的使用
+
+## spring-boot-learn-examples-v1-restful
+
+restful风格接口请求返回

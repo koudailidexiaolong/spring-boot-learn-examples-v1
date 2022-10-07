@@ -21,6 +21,7 @@ import com.julong.service.CityService;
  * @date 2020年3月10日 下午8:12:22
  * @desc 
  */
+@CrossOrigin
 @RestController
 public class CityAction {
 
@@ -34,7 +35,7 @@ public class CityAction {
 	 * @date 2020年3月10日 下午8:12:42
 	 * @desc
 	 */
-    @CrossOrigin(origins="http://192.168.10.20:9090/api")
+   
 	@RequestMapping(value="/citys",method=RequestMethod.GET)
 	public ResponseEntity<Object> getCityList(){
 		Pageable pageable = new PageRequest(1, 10);
