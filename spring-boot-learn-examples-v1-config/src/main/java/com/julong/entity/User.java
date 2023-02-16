@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
@@ -18,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
  * @date 2020年3月7日 下午11:09:31
  * @desc @ConfigurationProperties 此种方式为 对赋值的方式 支持松散绑定 类似 user-name 对应类中的 userName
  */
-@Component
+@Component //加载到容器中
 @ConfigurationProperties(prefix = "user") 
 @Validated //JSR303数据校验
 public class User {

@@ -35,7 +35,10 @@
    <module>spring-boot-learn-examples-v1-rest-template</module>
    <module>spring-boot-learn-examples-v1-restful</module>
    <module>spring-boot-learn-examples-v1-war</module>
-    <module>spring-boot-learn-examples-v1-hsqldb</module>
-    <module>spring-boot-learn-examples-v1-jsp</module>
-  </modules>
+   <module>spring-boot-learn-examples-v1-hsqldb</module>
+   <module>spring-boot-learn-examples-v1-jsp</module>
+   <module>spring-boot-learn-examples-v1-exception</module>
+   <module>spring-boot-learn-examples-v1-servlet</module>
+   <module>spring-boot-learn-examples-v1-mystarters</module>
+   </modules>
 </project>

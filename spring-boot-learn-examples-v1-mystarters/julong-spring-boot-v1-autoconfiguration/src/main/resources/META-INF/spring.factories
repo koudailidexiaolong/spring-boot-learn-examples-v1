@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+## 引入自定义配置
+org.julong.spring.boot.v1.configuration.JulongServiceAutoConfiguration

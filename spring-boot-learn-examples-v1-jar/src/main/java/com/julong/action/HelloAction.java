@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HelloAction {
 
-	@CrossOrigin
 	@RequestMapping("/")
 	@ResponseBody
 	public String sayHello(){
