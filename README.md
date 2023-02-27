@@ -220,6 +220,24 @@ public class HttpEncodingProperties {
 
 ## spring-boot-learn-examples-v1- jar
 
+#### 以jar 的方式打包项目 
+
+```xml
+<groupId>com.julong</groupId>
+<artifactId>spring-boot-learn-examples-v1-jar</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+<packaging>jar</packaging>
+<description>spring-boot-learn-examples-v1-jar</description>
+```
+
+增加 <packaging>jar</packaging> 属性 即可
+
+#### 打包方式
+
+![image-20230227214037621](D:\Workspaces\OWER\spring-boot-learn-examples-v1\images\image-20230227214037621.png)
+
+![image-20230227214142681](D:\Workspaces\OWER\spring-boot-learn-examples-v1\images\image-20230227214142681.png)
+
 ### 入门
 
 #### 导入项目依赖 pom.xml
@@ -609,9 +627,69 @@ public class User {
 
 以war的形式运行的项目 此方式打包或者编译会自动剔除tomcat 如果放在独立的tomcat webapp目录下 访问需要带项目名称
 
+### pom文件引入配置
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<!-- 编译的时候去掉 tomcat -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-tomcat</artifactId>
+    <scope>provided</scope>
+</dependency>
+```
+
+### 启动类配置
+
+```java
+package com.julong.main;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * springboot 启动文件
+ * @author julong
+ * @date 2020年1月16日 下午5:25:52
+ * @desc SpringBootServletInitializer 如果使用war包 部署 需要引入 并且将此启动类作为源文件映射进去
+ */
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan(basePackages="com.julong")//扫描的包
+public class SpringBootApplicationStarter extends SpringBootServletInitializer{
+
+	
+
+	/* (non-Javadoc) 需要扩展类SpringBootServletInitializer以支持WAR文件部署
+	 * @see org.springframework.boot.web.support.SpringBootServletInitializer#configure(org.springframework.boot.builder.SpringApplicationBuilder)
+	 */
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		// TODO Auto-generated method stub
+		return builder.sources(SpringBootApplicationStarter.class);
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		SpringApplication.run(SpringBootApplicationStarter.class, args);
+	}
+
+}
+
+```
+
+
+
 ## spring-boot-learn-examples-v1-servlet
 
-三大组件的注册
+#### 注册三大组件
 
 ```java
 package com.julong.config;
@@ -689,9 +767,187 @@ public class MyServerConfig {
 
 使用JDBC调用数据库连接 其实和spring jdbc一样的方式 ，本示例实现了简单的CRUD操作
 
+#### pom 引入依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+```
+
+#### application.properties配置
+
+```properties
+
+spring.application.name=spring-boot-learn-examples-v1-jdbc
+###jdbc数据库配置
+### 数据库连接地址URL
+spring.datasource.url=jdbc:mysql://localhost:3306/test
+### 数据库驱动名称
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+### 连接账号
+spring.datasource.username=root
+### 连接密码
+spring.datasource.password=root
+### 数据源名称
+#spring.datasource.name=
+### 数据DML脚本资源名称
+#spring.datasource.data=
+### schema DDL数据资源脚本名称
+#spring.datasource.schema=
+### 是否执行 data.sql脚本 默认为true
+#spring.datasource.initialize=
+### 读取外部sql脚本的字符集 
+#spring.datasource.sql-script-encoding=
+### 读取 schema 所使用的的平台
+#spring.datasource.platform=
+### 如果初始化失败是否要继续 默认为false
+#spring.datasource.continue-on-error=
+### sql脚本的分割符 默认 为 ；
+#spring.datasource.separator=
+### 数据源的名称
+#spring.datasource.jndi-name=
+### 最大活跃数 默认为
+#spring.datasource.dbcp.max-active=
+### 最大闲置连接数量
+#spring.datasource.dbcp.max-idle=
+### 最小闲置连接数量
+#spring.datasource.dbcp.min-idle=
+### 连接池的初始大小
+#spring.datasource.dbcp.initial-size=
+### 用来验证数据连接是否成功的查询语句
+#spring.datasource.dbcp.validation-query=
+### 从连接池借用连接时候是否需要检查连接 默认为false
+#spring.datasource.dbcp.test-on-borrow=
+### 向连接池归还连接的时候是否需要检查连接 默认为false
+#spring.datasource.dbcp.test-on-return=
+### 连接空闲的时候是否需要测试连接 默认为false
+#spring.datasource.dbcp.test-while-idle=
+### 多久可以清理一次数据库连接 默认为 5000毫秒
+#spring.datasource.dbcp.time-between-eviction-runs-millis=
+### 连接被清理之前 连接最多可以空闲多久 默认为 60000毫秒
+#spring.datasource.dbcp.min-evictable-idle-time-millis=
+### 最大等待时间 默认为 30000毫秒
+#spring.datasource.dbcp.max-wait=
+### 连接池是否可以通过jmx来进行管理 默认为false
+#spring.datasource.jmx-enabled=
+
+server.port=8080
+
+
+```
+
+#### 基于jdbc的操作
+
+```java
+package com.julong.dao.impl;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
+
+import com.julong.dao.UserDao;
+import com.julong.dao.entity.UserInfo;
+import com.julong.service.dto.UserDTO;
+
+@Repository
+public class UserDaoImpl implements UserDao {
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Override
+	public UserDTO getUser(String userName) throws Exception {
+		// TODO Auto-generated method stub
+		UserDTO userDTO = this.jdbcTemplate.query("select * from user where user_name = '"+userName+"'", new ResultSetExtractor<UserDTO>(){
+			@Override
+			public UserDTO extractData(ResultSet rs) throws SQLException, DataAccessException {
+				// TODO Auto-generated method stub
+				UserDTO user = new UserDTO();
+				while (rs.next()) {
+					user.setUserName(rs.getString("user_name"));
+					user.setUserAge(rs.getInt("user_age"));
+					user.setPassword(rs.getString("password"));
+					user.setUserCreateTime(rs.getDate("user_create_time"));
+				}
+				return user;
+			}
+			
+		});
+		return userDTO;
+	}
+
+	@Override
+	public int saveUser(UserInfo userInfo) {
+		// TODO Auto-generated method stub
+		return this.jdbcTemplate.update("insert into user(user_name,password,user_age,user_create_time) "
+				+ "value('"+userInfo.getUserName()+"','"+userInfo.getPassword()+"',"+userInfo.getUserAge()+",now())");
+	}
+
+	@Override
+	public int deleteUser(String userName) throws Exception {
+		// TODO Auto-generated method stub
+		return this.jdbcTemplate.update("delete from user where user_name= '"+userName+"'");
+	}
+
+	@Override
+	public int updateUser(UserInfo userInfo) throws Exception {
+		// TODO Auto-generated method stub
+		return this.jdbcTemplate.update("update user set password = '"+userInfo.getPassword()+"' where user_name = '"+userInfo.getUserName()+"'");
+	}
+
+
+}
+
+```
+
+主要引用 注解配置
+
+​    @Autowired
+​	private JdbcTemplate jdbcTemplate; 
+
+
+
 ## spring-boot-learn-examples-v1-data-jpa
 
 使用spring-data-jpa 的方式实现数据库操作，本示例实现了简单的CRUD操作
+
+#### pom引入配置
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+```
+
+#### application.properties配置
+
+```pr
+spring.application.name=spring-boot-learn-examples-v1-data-jpa
+server.port=8080
+
+spring.datasource.url=jdbc:mysql://192.168.10.222:3306/test
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+
+
+debug=true
+
+
+spring.jpa.show-sql=true
+spring.data.jpa.repositories.enabled=true
+```
+
+#### 实体类配置
 
 注解解释：
 
@@ -827,12 +1083,64 @@ public class CityInfo implements Serializable{
 
 ```
 
-配置：
+#### 日志配置log4j2.xml
 
-```prop
-spring.jpa.show-sql=true
-spring.data.jpa.repositories.enabled=true
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARE" name="log4j2-example" packages="">
+	  <Properties>
+	    <Property name="baseDir">./logs</Property>
+	  </Properties>
+	<!-- 打印到控制台的日志 -->
+	<Appenders>
+		<!-- 控制台打印 -->
+		<!-- target Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_OUT". -->
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout>
+				<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}	- %msg%n</pattern>
+			</PatternLayout>
+		</Console>
+		<!-- 生产环境打印方式 -->
+		<RollingFile name="FILE_INFO" fileName="${baseDir}/info.log" filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}.info.gz">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+		   	<!-- 打印级别 -->
+			<ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+			<Policies>
+				<!-- 参数配置为1 标识一小时一个文件  interval 此处填写 几就是 几小时滚动一次-->
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<!-- 每个文件的大小  如果使用这个配置 如果和时间的配置一起使用 需要在 生成的文件上加入 %i  参数 用户日志产生序列 -->
+				<!-- <TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="100 KB" /> -->
+			</Policies>
+		</RollingFile>
+		<RollingFile name="FILE_ERROR" fileName="${baseDir}/error.log" filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}.error.gz">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+			<!-- 打印级别 -->
+			 <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+			<Policies>
+				<!-- 参数配置为1 标识一小时一个文件 -->
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<!-- 打印debug日志 -->
+		<Root level="DEBUG">
+			<AppenderRef ref="STDOUT" />
+			<!-- 生产环境放开此配置-->
+			<AppenderRef ref="FILE_INFO" />
+			<AppenderRef ref="FILE_ERROR" /> 
+		</Root>
+	</Loggers>
+</Configuration>
+
 ```
+
+
 
 
 
@@ -935,7 +1243,7 @@ java -jar myproject.jar --server.port=8088
 
 ## spring-boot-learn-examples-v1-log4j
 
-使用log4j来进行日志记录功能
+#### 使用log4j来进行日志记录功能
 
 spring boot 默认排除 commons-logging
 
@@ -953,7 +1261,7 @@ spring boot 默认排除 commons-logging
 </dependency>
 ```
 
-
+#### log4j.properties配置
 
 ```properties
 # LOGGING
@@ -982,13 +1290,35 @@ logging.register-shutdown-hook=false
 
 ```
 
+#### 引入日志文件
+
+```java
+package com.julong.main;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 引入log4j日志模块
+ * @author julong
+ * @date 2020年2月12日 下午9:54:00
+ * @desc 
+ */
+@Configuration
+@ConfigurationProperties("classpath:log4j.properties")//引入 log4j 配置文件
+public class Log4jConfiguration {
+
+}
+
+```
+
 
 
 ## spring-boot-learn-examples-v1-log4j2
 
 使用log4j2日志记录功能
 
-配置
+#### pom文件引入配置
 
 ```xml
 <dependency>
@@ -1009,6 +1339,63 @@ logging.register-shutdown-hook=false
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-log4j2</artifactId>
 </dependency>
+```
+
+#### log4j2-spring.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARE" name="log4j2-example" packages="">
+	  <Properties>
+	    <Property name="baseDir">./logs</Property>
+	  </Properties>
+	<!-- 打印到控制台的日志 -->
+	<Appenders>
+		<!-- 控制台打印 -->
+		<!-- target Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_OUT". -->
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}  [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+		</Console>
+		<!-- 生产环境打印方式 -->
+		<RollingFile name="FILE_INFO" fileName="${baseDir}/info.log" filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}.info.gz">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+		   	<!-- 打印级别 -->
+			<ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+			<Policies>
+				<!-- 参数配置为1 标识一小时一个文件  interval 此处填写 几就是 几小时滚动一次-->
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<!-- 每个文件的大小  如果使用这个配置 如果和时间的配置一起使用 需要在 生成的文件上加入 %i  参数 用户日志产生序列 -->
+				<!-- <TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="100 KB" /> -->
+			</Policies>
+		</RollingFile>
+		<RollingFile name="FILE_ERROR" fileName="${baseDir}/error.log" filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}.error.gz">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}	- %msg%n</Pattern>
+			</PatternLayout>
+			<!-- 打印级别 -->
+			 <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+			<Policies>
+				<!-- 参数配置为1 标识一小时一个文件 -->
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<!-- 打印debug日志 -->
+		<Root level="DEBUG">
+			<AppenderRef ref="STDOUT" />
+			<!-- 生产环境放开此配置-->
+			<AppenderRef ref="FILE_INFO" />
+			<AppenderRef ref="FILE_ERROR" /> 
+		</Root>
+	</Loggers>
+</Configuration>
+
 ```
 
 
@@ -1214,6 +1601,106 @@ Integer statusCode = (Integer) request
 
 使用logback来进行日志记录
 
+#### pom文件引入配置
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <!-- 编译的时候去掉 tomcat 打war包时候使用 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-configuration-processor</artifactId>
+        <optional>true</optional>
+    </dependency>
+</dependencies>
+```
+
+#### logback.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--设置输出格式-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+	 <!--文件输出,时间窗口滚动-->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--日志名,指定最新的文件名，其他文件名使用FileNamePattern -->
+        <File>./logs/info.log</File>
+        <!-- 过滤日志级别 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>INFO</level>
+   		</filter>
+        <!--文件滚动模式-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名,可设置文件类型为gz,开启文件压缩-->
+            <FileNamePattern>./logs/info.%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!--按大小分割同一天的-->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+		
+        <!--输出格式-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+	 <!--文件输出,时间窗口滚动-->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--日志名,指定最新的文件名，其他文件名使用FileNamePattern -->
+        <File>./logs/error.log</File>
+        <!-- 过滤日志级别 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>ERROR</level>
+   		</filter>
+        <!--文件滚动模式-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名,可设置文件类型为gz,开启文件压缩-->
+            <FileNamePattern>./logs/error.%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!--按大小分割同一天的-->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+		
+        <!--输出格式-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+	<root level="DEBUG">
+		<appender-ref ref="console" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="FILE_ERROR" />
+	</root>
+</configuration>
+```
+
+
+
 ## spring-boot-learn-examples-v1-quartz
 
 使用spring-boot中的定时任务,其实和spring中的定时任务是一样的 
@@ -1222,9 +1709,185 @@ Integer statusCode = (Integer) request
 
 使用mybatis和pageHelper实现 数据库访问和分页功能
 
+#### pom文件引入依赖
+
+```xml
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+
+```
+
+
+
+#### 分页配置
+
+```properties
+spring.application.name=spring-boot-learn-examples-v1-mybatis-pagehelper
+
+spring.datasource.url=jdbc:mysql://localhost:3306/test
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+
+
+
+
+server.port=8080
+
+mybatis.check-config-location=true
+mybatis.type-aliases-package=classpath*:com.julong.**.entity
+## 配置加载mapper文件路径
+mybatis.mapper-locations=classpath*:com/julong/**/mapper/*Mapper.xml
+#mybatis.config-location=
+### mybaits使用的日志记录方式
+mybatis.configuration.log-impl=org.apache.ibatis.logging.slf4j.Slf4jImpl
+### 使全局的映射器启用或禁用缓存
+mybatis.configuration.cache-enabled=false
+#########################
+##分页
+#########################
+### 数据库方言
+#pagehelper.auto-dialect=mysql
+### 设置为true时，如果pageSize=0或者RowBounds.limit = 0就会查询出全部的结果
+pagehelper.page-size-zero=true
+### 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
+pagehelper.reasonable=false
+### 3.5.0版本可用 - 为了支持startPage(Object params)方法 -->
+### 增加了一个`params`参数来配置参数映射，用于从Map或ServletRequest中取值 
+### 可以配置pageNum,pageSize,count,pageSizeZero,reasonable,orderBy,不配置映射的用默认值 
+### 不理解该含义的前提下，不要随便复制该配置 
+pagehelper.params=pageNum=pageHelperStart;pageSize=pageHelperRows;
+### 设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用
+pagehelper.offset-as-page-num=true
+### 设置为true时，使用RowBounds分页会进行count查询
+pagehelper.row-bounds-with-count=true
+### 支持通过Mapper接口参数来传递分页参数
+pagehelper.support-methods-arguments=false
+
+
+
+```
+
+
+
+#### 主启动类配置
+
+@MapperScan 指定扫描
+
+```java
+package com.julong;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * spring boot 启动类
+ * @author julong
+ * @date 2020年2月16日 下午2:41:10
+ * @desc 
+ */
+@MapperScan(basePackages="com.julong.dao") //mybaits 的扫描
+@SpringBootApplication
+public class SpringBootPaghelperExampleApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootPaghelperExampleApplication.class, args);
+    }
+
+}
+
+```
+
+
+
+
+
+
+
+
+
 ## spring-boot-learn-examples-v1-actuator
 
 服务运行监控配置
+
+#### pom文件引入依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+#### 可以通过页面访问的监控属性
+
+```txt
+ * Actuator springboot的执行器 监视和管理应用
+ * 通过  http://localhost:9999/beans 访问已经注入的bean有哪些
+ * 
+ * /env/{name:.*} 查看配置属性
+ * /env || /env.json 查看配置属性
+ * /metrics/{name:.*} 运行时度量
+ * /metrics || /metrics.json
+ * /heapdump || /heapdump.json
+ * /info || /info.json 发布的应用信息
+ * /beans || /beans.json 已注册的beans
+ * /health || /health.json 监控健康状态
+ * /mappings || /mappings.json 控制器的映射信息
+ * /autoconfig || /autoconfig.json 自动配置的类
+ * /configprops || /configprops.json 配置的文件
+ * /trace || /trace.json web追踪请求
+ * /dump || /dump.json 导出当前线程快照
+```
+
+http://192.168.10.128:9999/health
+
+![image-20230227213536173](D:\Workspaces\OWER\spring-boot-learn-examples-v1\images\image-20230227213536173.png)
+
+http://192.168.10.128:9999/mappings
+
+![image-20230227213658392](D:\Workspaces\OWER\spring-boot-learn-examples-v1\images\image-20230227213658392.png)
 
 ## spring-boot-learn-examples-v1-jsp
 
@@ -1280,21 +1943,25 @@ restful风格接口请求返回
 
 ## julong-spring-boot-v1-starters
 
-自定义starters 
+#### 自定义starters 
 
 ```xml
-<dependency>
-    <groupId>com.julong</groupId>
-    <artifactId>julong-spring-boot-v1-autoconfiguration</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>com.julong</groupId>
+        <artifactId>julong-spring-boot-v1-autoconfiguration</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+</dependencies>
 ```
 
 
 
 ### julong-spring-boot-v1-autoconfiguration
 
-配置工程
+#### 配置工程
+
+![image-20230227215209874](D:\Workspaces\OWER\spring-boot-learn-examples-v1\images\image-20230227215209874.png)
 
 需要增加的配置 在 resources 下 创建 MATE-INF /spring.factories 文件
 
@@ -1305,8 +1972,278 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.julong.spring.boot.v1.configuration.JulongServiceAutoConfiguration
 ```
 
+#### 属性定义
+
+##### JulongProperties.java
+
+```java
+package org.julong.spring.boot.v1.configuration;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+/**
+ * 配置属性类
+ * @author julong
+ * @date 2023年2月16日 上午9:37:20
+ * @desc 
+ */
+@ConfigurationProperties(prefix="julong")
+public class JulongProperties {
+
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	
+}
+
+```
+
+##### JulongServiceAutoConfiguration.java
+
+```java
+package org.julong.spring.boot.v1.configuration;
+
+import org.julong.spring.boot.v1.service.JulongService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 自动配置类
+ * @author julong
+ * @date 2023年2月16日 上午9:41:11
+ * @desc 
+ */
+@Configuration
+@ConditionalOnWebApplication //web 环境生效
+@EnableConfigurationProperties(JulongProperties.class)
+public class JulongServiceAutoConfiguration {
+
+	@Autowired
+	private JulongProperties julongProperties;
+	
+	@Bean
+	public JulongService julongService(){
+		JulongService service = new JulongService();
+		service.setJulongProperties(julongProperties);
+		return service;
+	}
+}
+
+```
+
 
 
 ### julong-spring-boot-v1-starter-test
 
 测试工程
+
+#### pom文件引入配置
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.julong</groupId>
+        <artifactId>julong-spring-boot-v1-starters</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+
+
+## spring-boot-learn-examples-v1-admin-server
+
+服务管理
+
+#### pom文件引入配置
+
+```xml
+<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-server</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-server-ui</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-server-ui-hystrix</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-server-ui-turbine</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-server-ui-login</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+```
+
+#### admin配置
+
+```java
+package com.julong;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import com.hazelcast.config.Config;
+import com.hazelcast.config.EvictionPolicy;
+import com.hazelcast.config.ListConfig;
+import com.hazelcast.config.MapConfig;
+
+import de.codecentric.boot.admin.config.EnableAdminServer;
+
+
+/**
+ * Spring Boot执行器(Actuator)提供安全端点，用于监视和管理Spring Boot应用程序。 默认情况下，所有执行器端点都是安全的
+ * @author julong
+ * @date 2020年3月11日 下午8:23:13
+ * @desc 
+ * 使用Spring Boot Actuator Endpoint监控应用程序有点困难。 因为，如果有’n’个应用程序，每个应用程序都有单独的执行器端点，从而使监控变得困难。 
+ * Spring Boot Admin Server是一个用于管理和监控Microservice应用程序的程序。
+ */
+@SpringBootApplication
+@EnableAdminServer
+public class SpringBootAdminServerExampleApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringBootAdminServerExampleApplication.class, args);
+	}
+
+	@Bean
+	public Config hazelcastConfig() {
+		return new Config().setProperty("hazelcast.jmx", "true")
+				.addMapConfig(new MapConfig("spring-boot-admin-application-store").setBackupCount(1)
+						.setEvictionPolicy(EvictionPolicy.NONE))
+				.addListConfig(new ListConfig("spring-boot-admin-event-store").setBackupCount(1)
+						.setMaxSize(1000));
+	}
+}
+
+```
+
+服务访问地址 ：http://192.168.10.128:8080
+
+
+
+![image-20230227221441198](D:\Workspaces\OWER\spring-boot-learn-examples-v1\images\image-20230227221441198.png)
+
+
+
+
+
+## spring-boot-learn-examples-v1-admin-client
+
+监控客户端
+
+#### pom文件引入配置
+
+```xml
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+```
+
+
+
+#### application.properties配置
+
+```properties
+#服务名称
+spring.application.name=spring-boot-learn-examples-v1-admin-client
+server.port=9090
+
+debug=true
+trace=true
+logging.level.root=debug
+
+#启用客户客户端
+spring.boot.admin.client.enabled=true
+#设置服务端地址
+spring.boot.admin.url=http://localhost:8080
+
+
+```
+
+服务监控成功如下图：
+
+![image-20230227221727876](D:\Workspaces\OWER\spring-boot-learn-examples-v1\images\image-20230227221727876.png)
